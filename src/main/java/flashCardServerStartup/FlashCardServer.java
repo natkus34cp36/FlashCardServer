@@ -16,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import flashCardServerDAO.CardDAO;
+import flashCardServerDAO.ScoreboardDAO;
 import flashCardServerDAO.StudySetDAO;
 import flashCardServerImpl.CardServiceImpl;
+import flashCardServerImpl.ScoreboardServiceImpl;
 import flashCardServerImpl.StudySetServiceImpl;
 import flashCardServerUtils.CLIParser;
 
@@ -53,7 +55,7 @@ public class FlashCardServer extends Application<FlashCardServerConfig>{
 		final DBI jdbi = factory.build(env, configuration.getDataSourceFactory(), DATABASE_TYPE);
 		final StudySetDAO studySetDAO = jdbi.onDemand(StudySetDAO.class);
 		final CardDAO cardDAO = jdbi.onDemand(CardDAO.class);
-		
+		final ScoreboardDAO scoreboardDAO = jdbi.onDemand(ScoreboardDAO.class);
 		
 		final FilterRegistration.Dynamic cors = env.servlets().addFilter("CORS", CrossOriginFilter.class);
 
@@ -68,7 +70,8 @@ public class FlashCardServer extends Application<FlashCardServerConfig>{
 		cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 		
 		env.jersey().register(new CardServiceImpl(configuration, cardDAO));	
-		env.jersey().register(new StudySetServiceImpl(configuration, studySetDAO, cardDAO));	
+		env.jersey().register(new StudySetServiceImpl(configuration, studySetDAO, cardDAO));
+		env.jersey().register(new ScoreboardServiceImpl(configuration, scoreboardDAO));
 	}
 
 }
