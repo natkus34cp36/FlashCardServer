@@ -68,21 +68,6 @@ public class StudySetServiceImpl {
 			getAllStudySetResponse.add(getStudySetResponse);
 		}
 		
-//		List<GetStudySetResponse> getStudySetResponses = new ArrayList<GetStudySetResponse>();
-//		List<StudySet> studySets = studyDAO.getAll();
-//		for(StudySet studySet: studySets){
-//			GetStudySetResponse getStudySetResponse = new GetStudySetResponse();
-//			getStudySetResponse.setId(studySet.getId());
-//			getStudySetResponse.setName(studySet.getName());
-//			getStudySetResponse.setDescription(studySet.getDescription());
-//			getStudySetResponse.setCreated(studySet.getCreated());
-//			getStudySetResponse.setUpdated(studySet.getUpdated());
-//			getStudySetResponse.setSupportedLanguages(studySet.getSupportedLanguages());
-//			getStudySetResponse.setCardResponse(Converter.getCardResponses(cardDAO.findCardByStudySetId(studySet.getId())));
-//			
-//			getStudySetResponses.add(getStudySetResponse);
-//		}
-//		
 		try {
 			return Response.ok(getAllStudySetResponse, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
@@ -96,19 +81,8 @@ public class StudySetServiceImpl {
 	public Response getStudySet(@PathParam("id") int id) {
 		StudySet studySet = studyDAO.findStudySetById(id);
 		
-		GetStudySetResponse studySetResponse = new GetStudySetResponse();
-		studySetResponse.setId(studySet.getId());
-		studySetResponse.setName(studySet.getName());
-		studySetResponse.setDescription(studySet.getDescription());
-		studySetResponse.setCreated(studySet.getCreated());
-		studySetResponse.setUpdated(studySet.getUpdated());
-		studySetResponse.setSupportedLanguages(studySet.getSupportedLanguages());
-		
-		List<GetCardResponse> cardResponse = Converter.getCardResponses(cardDAO.findCardByStudySetId(id));
-		studySetResponse.setCardResponse(cardResponse);
-		
 		try {
-			return Response.ok(studySetResponse, MediaType.APPLICATION_JSON).build();
+			return Response.ok(studySet, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return Response.serverError().entity(e.getMessage()).build();
@@ -145,8 +119,8 @@ public class StudySetServiceImpl {
 			studySet.setCreated(getStudySetResponse.getCreated());
 			studySet.setUpdated(getStudySetResponse.getUpdated());
 			studySet.setSupportedLanguages(getStudySetResponse.getSupportedLanguages());
-			studyDAO.insertStudySet(studySet);
-			
+			StudySet addedStudySetId = studyDAO.insertStudySet(studySet);
+			System.out.println("new id = " + addedStudySetId.getId());
 			List<GetCardResponse> cards = getStudySetResponse.getCardResponse();
 			int count = cardDAO.getLastCardId().getCardId();
 			count++;
@@ -154,7 +128,7 @@ public class StudySetServiceImpl {
 				List<Content> contents = card.getContent();
 				for(Content content: contents){
 					Card new_card = new Card();
-					new_card.setStudySetId(getStudySetResponse.getId());
+					new_card.setStudySetId(addedStudySetId.getId());
 					new_card.setCardId(count);
 					new_card.setLanguage(content.getLanguage());
 					new_card.setWord(content.getWord());
@@ -211,7 +185,6 @@ public class StudySetServiceImpl {
 		}
 		
 		return Response.ok(new GetStudySetMultiSetResponse(keys, getCardResponseList), MediaType.APPLICATION_JSON).build();
-//		return Response.ok(keys, MediaType.APPLICATION_JSON).build();
 	}
 	
 //	@DELETE
