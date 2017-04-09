@@ -22,6 +22,6 @@ public interface StudySetDAO {
     @SqlUpdate("delete from  " + StudySetPeer.TABLE_NAME + " where  " + StudySetPeer.ID + "  = :id")
     int deleteStudySetById(@Bind("id") int id);
 
-    @SqlUpdate("insert into " + StudySetPeer.TABLE_NAME + " ( " + StudySetPeer.NAME + " ,  " + StudySetPeer.DESCRIPTION + " ,  " + StudySetPeer.CREATED + " ,  " + StudySetPeer.UPDATED  + " ,  " + StudySetPeer.SUPPORTED_LANGUAGES + " ) values (:name, :description, :created, :updated, :supportedLanguages)")
+    @SqlUpdate("insert into " + StudySetPeer.TABLE_NAME + " ( " + StudySetPeer.NAME + " ,  " + StudySetPeer.DESCRIPTION + " ,  " + StudySetPeer.CREATED + " ,  " + StudySetPeer.UPDATED  + " ,  " + StudySetPeer.SUPPORTED_LANGUAGES + " ) values (:name, :description, :created, :updated, :supportedLanguages) returning id")
     int insertStudySet(@BindBean StudySet studySet);
 }
