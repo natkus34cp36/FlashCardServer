@@ -119,8 +119,8 @@ public class StudySetServiceImpl {
 			studySet.setCreated(getStudySetResponse.getCreated());
 			studySet.setUpdated(getStudySetResponse.getUpdated());
 			studySet.setSupportedLanguages(getStudySetResponse.getSupportedLanguages());
-			int studySetId = studyDAO.insertStudySet(studySet);
-			
+			StudySet addedStudySetId = studyDAO.insertStudySet(studySet);
+			System.out.println("new id = " + addedStudySetId.getId());
 			List<GetCardResponse> cards = getStudySetResponse.getCardResponse();
 			int count = cardDAO.getLastCardId().getCardId();
 			count++;
@@ -128,7 +128,7 @@ public class StudySetServiceImpl {
 				List<Content> contents = card.getContent();
 				for(Content content: contents){
 					Card new_card = new Card();
-					new_card.setStudySetId(studySetId);
+					new_card.setStudySetId(addedStudySetId.getId());
 					new_card.setCardId(count);
 					new_card.setLanguage(content.getLanguage());
 					new_card.setWord(content.getWord());
